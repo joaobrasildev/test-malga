@@ -1,10 +1,10 @@
-import { DefaultEntity } from '@src/shared/persistence/typeorm/default.entity';
+import { DefaultEntity } from '@src/shared/persistence/typeorm/entity/default.entity';
 import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
 import { Transaction } from './transaction.entity';
 import { EType } from '@src/module/core/enum/transaction.enum';
 
 @Entity({ name: 'transactionDetail' })
-export class TransactionDetails extends DefaultEntity<TransactionDetails> {
+export class TransactionDetail extends DefaultEntity<TransactionDetail> {
   @Column({ nullable: false, type: 'uuid' })
   transactionId: string;
 

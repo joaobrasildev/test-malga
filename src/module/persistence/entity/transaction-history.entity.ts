@@ -4,7 +4,7 @@ import {
   EPaymentType,
   EType,
 } from '@src/module/core/enum/transaction.enum';
-import { DefaultEntity } from '@src/shared/persistence/typeorm/default.entity';
+import { DefaultEntity } from '@src/shared/persistence/typeorm/entity/default.entity';
 import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
 import { Transaction } from './transaction.entity';
 

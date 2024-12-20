@@ -4,10 +4,10 @@ import {
   EPaymentType,
   EType,
 } from '@src/module/core/enum/transaction.enum';
-import { DefaultEntity } from '@src/shared/persistence/typeorm/default.entity';
+import { DefaultEntity } from '@src/shared/persistence/typeorm/entity/default.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { TransactionHistory } from './transaction-history.entity';
-import { TransactionDetails } from './transaction-details.entity';
+import { TransactionDetail } from './transaction-details.entity';
 
 @Entity({ name: 'transaction' })
 export class Transaction extends DefaultEntity<Transaction> {
@@ -65,11 +65,11 @@ export class Transaction extends DefaultEntity<Transaction> {
   transactionHistory: TransactionHistory;
 
   @ManyToOne(
-    () => TransactionDetails,
+    () => TransactionDetail,
     (transactionDetails) => transactionDetails.transaction,
     {
       cascade: true,
     },
   )
-  transactionDetails: TransactionDetails;
+  transactionDetails: TransactionDetail;
 }
