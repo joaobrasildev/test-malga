@@ -7,7 +7,6 @@ import {
   IPaymentProccesInput,
   IPaymentProccesSuccessOutput,
 } from '../interface/payment-proccess.interface';
-import { TransactionHistoryEntity } from '@src/module/transaction/persistence/entity/transaction-history.entity';
 import { randomUUID } from 'crypto';
 import {
   EIntegrator,
@@ -16,11 +15,12 @@ import {
   EPaymentType,
   EType,
 } from '../enum/transaction.enum';
-import { TransactionEntity } from '@src/module/transaction/persistence/entity/transaction.entity';
-import { TransactionDetailEntity } from '@src/module/transaction/persistence/entity/transaction-details.entity';
 import { StripeApiProvider } from '@src/module/transaction/integration/provider/stripe-api.provider';
 import { BraintreeApiProvider } from '@src/module/transaction/integration/provider/braintree-api.provider';
 import { Injectable } from '@nestjs/common';
+import { TransactionHistoryModel } from '../model/transaction-history.model';
+import { TransactionModel } from '../model/transaction.model';
+import { TransactionDetailModel } from '../model/transaction-detail.model';
 
 @Injectable()
 export class PaymentProcessService {
@@ -36,7 +36,7 @@ export class PaymentProcessService {
     params: IPaymentProccesInput,
   ): Promise<IPaymentProccesSuccessOutput | IPaymentProccesFailOutput> {
     const transactionId = randomUUID();
-    const historyModel = new TransactionHistoryEntity({
+    const historyModel = new TransactionHistoryModel({
       transactionId: transactionId,
       paymentType: params.paymentMethod.type,
       type: EType.PAYMENT,
@@ -47,7 +47,7 @@ export class PaymentProcessService {
       amount: params.amount,
     });
 
-    const transactionModel = new TransactionEntity({
+    const transactionModel = new TransactionModel({
       id: transactionId,
       paymentType: params.paymentMethod.type,
       type: EType.PAYMENT,
@@ -58,7 +58,7 @@ export class PaymentProcessService {
       amount: params.amount,
     });
 
-    const detailModel = new TransactionDetailEntity({
+    const detailModel = new TransactionDetailModel({
       transactionId: transactionId,
       type: EPaymentType.CARD,
       cardNumber: params.paymentMethod.card.number,
@@ -69,9 +69,11 @@ export class PaymentProcessService {
     });
 
     Promise.all([
-      await this.transactionHistoryRepository.save(historyModel),
+      await this.transactionHistoryRepository.saveTransactionHistory(
+        historyModel,
+      ),
       await this.transactionRepository.saveTransaction(transactionModel),
-      await this.transactionDetailRepository.save(detailModel),
+      await this.transactionDetailRepository.saveTransactionDetail(detailModel),
     ]);
 
     let transactionResponse;
@@ -86,8 +88,8 @@ export class PaymentProcessService {
         },
       });
 
-      await this.transactionHistoryRepository.save(
-        new TransactionHistoryEntity({
+      await this.transactionHistoryRepository.saveTransactionHistory(
+        new TransactionHistoryModel({
           transactionId: transactionId,
           paymentType: params.paymentMethod.type,
           type: EType.PAYMENT,
@@ -110,8 +112,8 @@ export class PaymentProcessService {
       };
     } catch (stripeError) {
       console.log(`STRIPE_PROVIDER_ERROR::${stripeError}`);
-      await this.transactionHistoryRepository.save(
-        new TransactionHistoryEntity({
+      await this.transactionHistoryRepository.saveTransactionHistory(
+        new TransactionHistoryModel({
           transactionId: transactionId,
           paymentType: params.paymentMethod.type,
           type: EType.PAYMENT,
@@ -132,8 +134,8 @@ export class PaymentProcessService {
             paymentType: params.paymentMethod.type,
             card: params.paymentMethod.card,
           });
-        await this.transactionHistoryRepository.save(
-          new TransactionHistoryEntity({
+        await this.transactionHistoryRepository.saveTransactionHistory(
+          new TransactionHistoryModel({
             transactionId: transactionId,
             paymentType: params.paymentMethod.type,
             type: EType.PAYMENT,
@@ -156,8 +158,8 @@ export class PaymentProcessService {
         };
       } catch (braintreeError) {
         console.log(`BRAINTREE_PROVIDER_ERROR::${braintreeError}`);
-        await this.transactionHistoryRepository.save(
-          new TransactionHistoryEntity({
+        await this.transactionHistoryRepository.saveTransactionHistory(
+          new TransactionHistoryModel({
             transactionId: transactionId,
             paymentType: params.paymentMethod.type,
             type: EType.PAYMENT,

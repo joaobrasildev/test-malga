@@ -11,6 +11,7 @@ export class TransactionRepository extends DefaultTypeOrmRepository<TransactionE
   }
   async saveTransaction(model: TransactionModel): Promise<TransactionModel> {
     const transaction = new TransactionEntity({
+      id: model.id,
       paymentType: model.paymentType,
       type: model.type,
       status: model.status,
