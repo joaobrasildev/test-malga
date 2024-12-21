@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from './shared/config/config.module';
-import { PersistenceModule } from './module/persistence/persistence.module';
+import { TransactionModule } from './module/transaction/transaction.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), PersistenceModule],
+  imports: [ConfigModule.forRoot(), TransactionModule],
   controllers: [],
   providers: [],
 })

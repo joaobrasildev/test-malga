@@ -5,7 +5,7 @@ import {
 } from '../enum/transaction.enum';
 
 export interface ICard {
-  cardNumber: string;
+  number: string;
   holderName: string;
   cvv: string;
   expirationDate: string;

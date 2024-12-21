@@ -3,7 +3,7 @@ import {
   EPaymentStatus,
   EPaymentType,
   EType,
-} from '@src/module/core/enum/transaction.enum';
+} from '@src/module/transaction/core/enum/transaction.enum';
 import { DefaultEntity } from '@src/shared/persistence/typeorm/entity/default.entity';
 import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
 import { TransactionEntity } from './transaction.entity';

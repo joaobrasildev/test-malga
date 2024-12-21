@@ -8,4 +8,5 @@ export class TransactionRepository extends DefaultTypeOrmRepository<TransactionE
   constructor(@Inject(DataSource) readonly dataSource: DataSource) {
     super(TransactionEntity, dataSource);
   }
+  async saveTransaction();
 }

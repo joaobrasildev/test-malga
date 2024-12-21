@@ -8,7 +8,7 @@ import {
   IRefundStripeOutput,
 } from '../interface/stripe-api.interface';
 import { randomUUID } from 'crypto';
-import { EPaymentType } from '@src/module/core/enum/transaction.enum';
+import { EPaymentType } from '@src/module/transaction/core/enum/transaction.enum';
 
 @Injectable()
 export class StripeApiProvider {

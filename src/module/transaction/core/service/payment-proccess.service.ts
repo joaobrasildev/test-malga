@@ -1,13 +1,13 @@
-import { TransactionDetailRepository } from '@src/module/persistence/repository/transaction-detail.repository';
-import { TransactionHistoryRepository } from '@src/module/persistence/repository/transaction-history.repository';
-import { TransactionRepository } from '@src/module/persistence/repository/transaction.repository';
+import { TransactionDetailRepository } from '@src/module/transaction/persistence/repository/transaction-detail.repository';
+import { TransactionHistoryRepository } from '@src/module/transaction/persistence/repository/transaction-history.repository';
+import { TransactionRepository } from '@src/module/transaction/persistence/repository/transaction.repository';
 import {
   EFailReason,
   IPaymentProccesFailOutput,
   IPaymentProccesInput,
   IPaymentProccesSuccessOutput,
 } from '../interface/payment-proccess.interface';
-import { TransactionHistoryEntity } from '@src/module/persistence/entity/transaction-history.entity';
+import { TransactionHistoryEntity } from '@src/module/transaction/persistence/entity/transaction-history.entity';
 import { randomUUID } from 'crypto';
 import {
   EIntegrator,
@@ -16,10 +16,10 @@ import {
   EPaymentType,
   EType,
 } from '../enum/transaction.enum';
-import { TransactionEntity } from '@src/module/persistence/entity/transaction.entity';
-import { TransactionDetailEntity } from '@src/module/persistence/entity/transaction-details.entity';
-import { StripeApiProvider } from '@src/module/integration/provider/stripe-api.provider';
-import { BraintreeApiProvider } from '@src/module/integration/provider/braintree-api.provider';
+import { TransactionEntity } from '@src/module/transaction/persistence/entity/transaction.entity';
+import { TransactionDetailEntity } from '@src/module/transaction/persistence/entity/transaction-details.entity';
+import { StripeApiProvider } from '@src/module/transaction/integration/provider/stripe-api.provider';
+import { BraintreeApiProvider } from '@src/module/transaction/integration/provider/braintree-api.provider';
 
 export class PaymentProcessService {
   constructor(
@@ -59,7 +59,7 @@ export class PaymentProcessService {
     const detailModel = new TransactionDetailEntity({
       transactionId: transactionId,
       type: EPaymentType.CARD,
-      cardNumber: params.paymentMethod.card.cardNumber,
+      cardNumber: params.paymentMethod.card.number,
       holderName: params.paymentMethod.card.holderName,
       cvv: params.paymentMethod.card.cvv,
       expirationDate: params.paymentMethod.card.expirationDate,
@@ -84,6 +84,13 @@ export class PaymentProcessService {
         },
       });
 
+      // await this.transactionHistoryRepository.save({
+      //   ...historyModel,
+      //   status: EPaymentStatus.PROCESSED,
+      //   statusMessage: EPaymentStatusMessage.PROCESSED,
+      //   processedBy: EIntegrator.STRIPE,
+      // });
+
       return {
         status: transactionResponse.status,
         currency: transactionResponse.currency,
@@ -95,6 +102,12 @@ export class PaymentProcessService {
       };
     } catch (stripeError) {
       console.log(`STRIPE_PROVIDER_ERROR::${stripeError}`);
+      // await this.transactionHistoryRepository.save({
+      //   ...historyModel,
+      //   status: EPaymentStatus.PROCESSING_FAILED,
+      //   statusMessage: EPaymentStatusMessage.PROCESSING_FAILED_UNAVALABLE,
+      //   processedBy: EIntegrator.STRIPE,
+      // });
 
       try {
         transactionResponse =
@@ -105,6 +118,13 @@ export class PaymentProcessService {
             paymentType: params.paymentMethod.type,
             card: params.paymentMethod.card,
           });
+
+        //await this.transactionHistoryRepository.save({
+        //   ...historyModel,
+        //   status: EPaymentStatus.PROCESSED,
+        //   statusMessage: EPaymentStatusMessage.PROCESSED,
+        //   processedBy: EIntegrator.BRAINTREE,
+        // });
 
         return {
           status: transactionResponse.status,
@@ -117,6 +137,12 @@ export class PaymentProcessService {
         };
       } catch (braintreeError) {
         console.log(`BRAINTREE_PROVIDER_ERROR::${braintreeError}`);
+        // await this.transactionHistoryRepository.save({
+        //   ...historyModel,
+        //   status: EPaymentStatus.PROCESSING_FAILED,
+        //   statusMessage: EPaymentStatusMessage.PROCESSING_FAILED_UNAVALABLE,
+        //   processedBy: EIntegrator.BRAINTREE,
+        // });
 
         return {
           status: EPaymentStatus.PROCESSING_FAILED,

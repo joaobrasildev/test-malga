@@ -1,7 +1,7 @@
 import { DefaultEntity } from '@src/shared/persistence/typeorm/entity/default.entity';
 import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
 import { TransactionEntity } from './transaction.entity';
-import { EPaymentType } from '@src/module/core/enum/transaction.enum';
+import { EPaymentType } from '@src/module/transaction/core/enum/transaction.enum';
 
 @Entity({ name: 'transactionDetail' })
 export class TransactionDetailEntity extends DefaultEntity<TransactionDetailEntity> {

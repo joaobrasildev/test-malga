@@ -1,18 +1,16 @@
-import { DataSource, EntityTarget, ObjectLiteral, Repository } from 'typeorm';
+import { DataSource, EntityTarget, Repository } from 'typeorm';
+import { DefaultEntity } from '../entity/default.entity';
 
-export abstract class DefaultTypeOrmRepository<
-  T extends ObjectLiteral,
-> extends Repository<T> {
+export abstract class DefaultTypeOrmRepository<T extends DefaultEntity<T>> {
+  protected repository: Repository<T>;
   constructor(
-    readonly model: EntityTarget<T>,
+    readonly entity: EntityTarget<T>,
     readonly dataSource: DataSource,
   ) {
-    super(model, dataSource.createEntityManager());
+    this.repository = dataSource.getRepository(entity);
   }
 
-  async deleteAll(): Promise<void> {
-    const repository = this.dataSource.getRepository(this.model);
-    const entities = await repository.find();
-    await repository.remove(entities);
+  async save(entity: T): Promise<T> {
+    return await this.repository.save(entity);
   }
 }
