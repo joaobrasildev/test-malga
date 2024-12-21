@@ -1,20 +1,20 @@
 import { DefaultEntity } from '@src/shared/persistence/typeorm/entity/default.entity';
 import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
-import { Transaction } from './transaction.entity';
-import { EType } from '@src/module/core/enum/transaction.enum';
+import { TransactionEntity } from './transaction.entity';
+import { EPaymentType } from '@src/module/core/enum/transaction.enum';
 
 @Entity({ name: 'transactionDetail' })
-export class TransactionDetail extends DefaultEntity<TransactionDetail> {
+export class TransactionDetailEntity extends DefaultEntity<TransactionDetailEntity> {
   @Column({ nullable: false, type: 'uuid' })
   transactionId: string;
 
   @Column({
     nullable: false,
     type: 'enum',
-    enum: EType,
-    enumName: 'typeDetail',
+    enum: EPaymentType,
+    enumName: 'typePaymentDetail',
   })
-  type: EType;
+  type: EPaymentType;
 
   @Column({ nullable: true, type: 'varchar' })
   cardNumber: string;
@@ -31,7 +31,10 @@ export class TransactionDetail extends DefaultEntity<TransactionDetail> {
   @Column({ nullable: true, type: 'int' })
   installments: number;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.transactionDetails)
+  @OneToMany(
+    () => TransactionEntity,
+    (transaction) => transaction.transactionDetails,
+  )
   @JoinColumn()
-  transaction: Transaction;
+  transaction: TransactionEntity;
 }

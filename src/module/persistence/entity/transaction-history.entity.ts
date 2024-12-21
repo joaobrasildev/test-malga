@@ -6,10 +6,10 @@ import {
 } from '@src/module/core/enum/transaction.enum';
 import { DefaultEntity } from '@src/shared/persistence/typeorm/entity/default.entity';
 import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
-import { Transaction } from './transaction.entity';
+import { TransactionEntity } from './transaction.entity';
 
 @Entity({ name: 'transactionHistory' })
-export class TransactionHistory extends DefaultEntity<TransactionHistory> {
+export class TransactionHistoryEntity extends DefaultEntity<TransactionHistoryEntity> {
   @Column({ nullable: false, type: 'uuid' })
   transactionId: string;
 
@@ -57,7 +57,10 @@ export class TransactionHistory extends DefaultEntity<TransactionHistory> {
   @Column({ nullable: false, type: 'int' })
   amount: number;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.transactionHistory)
+  @OneToMany(
+    () => TransactionEntity,
+    (transaction) => transaction.transactionHistory,
+  )
   @JoinColumn()
-  transaction: Transaction;
+  transaction: TransactionEntity;
 }

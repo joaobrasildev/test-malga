@@ -6,11 +6,14 @@ import {
 } from '@src/module/core/enum/transaction.enum';
 import { DefaultEntity } from '@src/shared/persistence/typeorm/entity/default.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { TransactionHistory } from './transaction-history.entity';
-import { TransactionDetail } from './transaction-details.entity';
+import { TransactionHistoryEntity } from './transaction-history.entity';
+import { TransactionDetailEntity } from './transaction-details.entity';
 
 @Entity({ name: 'transaction' })
-export class Transaction extends DefaultEntity<Transaction> {
+export class TransactionEntity extends DefaultEntity<TransactionEntity> {
+  @Column({ nullable: true, type: 'uuid' })
+  externalTransactionId: string;
+
   @Column({
     nullable: false,
     type: 'enum',
@@ -56,20 +59,20 @@ export class Transaction extends DefaultEntity<Transaction> {
   amount: number;
 
   @ManyToOne(
-    () => TransactionHistory,
+    () => TransactionHistoryEntity,
     (transactionHistory) => transactionHistory.transaction,
     {
       cascade: true,
     },
   )
-  transactionHistory: TransactionHistory;
+  transactionHistory: TransactionHistoryEntity;
 
   @ManyToOne(
-    () => TransactionDetail,
+    () => TransactionDetailEntity,
     (transactionDetails) => transactionDetails.transaction,
     {
       cascade: true,
     },
   )
-  transactionDetails: TransactionDetail;
+  transactionDetails: TransactionDetailEntity;
 }

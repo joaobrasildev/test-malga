@@ -1,9 +1,9 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@src/shared/config/config.module';
 import { TypeOrmPersistenceModule } from '@src/shared/persistence/typeorm/typeorm-persistence.module';
-import { Transaction } from './entity/transaction.entity';
-import { TransactionHistory } from './entity/transaction-history.entity';
-import { TransactionDetail } from './entity/transaction-details.entity';
+import { TransactionEntity } from './entity/transaction.entity';
+import { TransactionHistoryEntity } from './entity/transaction-history.entity';
+import { TransactionDetailEntity } from './entity/transaction-details.entity';
 import { TransactionRepository } from './repository/transaction.repository';
 import { TransactionHistoryRepository } from './repository/transaction-history.repository';
 import { TransactionDetailRepository } from './repository/transaction-detail.repository';
@@ -17,7 +17,11 @@ export class PersistenceModule {
       imports: [
         TypeOrmPersistenceModule.forRoot({
           migrations,
-          entities: [Transaction, TransactionHistory, TransactionDetail],
+          entities: [
+            TransactionEntity,
+            TransactionHistoryEntity,
+            TransactionDetailEntity,
+          ],
         }),
         ConfigModule.forRoot(),
       ],

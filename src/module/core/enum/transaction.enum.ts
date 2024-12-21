@@ -2,10 +2,6 @@ export enum EPaymentType {
   CARD = 'card',
 }
 
-export enum EPaymentTypeHistory {
-  CARD = 'card',
-}
-
 export enum EType {
   PAYMENT = 'payment',
   REFUND = 'refund',
@@ -21,7 +17,7 @@ export enum EPaymentStatus {
 }
 
 export enum EPaymentStatusMessage {
-  PROSSEGING = 'Pagamento em processamento.',
+  PROCESSING = 'Pagamento em processamento.',
   PROCESSED = 'Pagamento processado com sucesso.',
   PROCESSING_FAILED_UNAVALABLE = 'Falha no processamento do pagamento - Integrador indisponível.',
   PROCESSING_FAILED_UNAUTHORIZED = 'Falha no processamento do pagamento - Forma de pagamento não autorizada.',
