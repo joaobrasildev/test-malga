@@ -45,9 +45,9 @@ export class StripeApiProvider {
   }
 
   public async getTransaction(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     id: string,
   ): Promise<IGetTransactionStripeOutput> {
+    console.log(id);
     return {
       id: randomUUID(),
       createdAt: new Date(),

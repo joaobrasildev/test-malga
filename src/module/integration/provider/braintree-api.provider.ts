@@ -45,9 +45,9 @@ export class BraintreeApiProvider {
   }
 
   public async getTransaction(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     id: string,
   ): Promise<IGetTransactionBraintreeOutput> {
+    console.log(id);
     return {
       id: randomUUID(),
       date: new Date(),
