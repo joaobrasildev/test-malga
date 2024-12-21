@@ -1,5 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { ConfigModule } from '@src/shared/config/config.module';
+import { ConfigModule } from '@src/shared/module/config/config.module';
 import { TypeOrmPersistenceModule } from '@src/shared/persistence/typeorm/typeorm-persistence.module';
 import { TransactionEntity } from './entity/transaction.entity';
 import { TransactionHistoryEntity } from './entity/transaction-history.entity';

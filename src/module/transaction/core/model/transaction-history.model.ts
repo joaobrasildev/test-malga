@@ -7,8 +7,9 @@ import {
   EType,
 } from '../enum/transaction.enum';
 
-export class TransactionModel {
+export class TransactionHistoryModel {
   id: string;
+  transactionId: string;
   paymentType: EPaymentType;
   type: EType;
   status: EPaymentStatus;
@@ -22,7 +23,7 @@ export class TransactionModel {
 
   constructor(
     data: WithOptional<
-      TransactionModel,
+      TransactionHistoryModel,
       'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
     >,
   ) {

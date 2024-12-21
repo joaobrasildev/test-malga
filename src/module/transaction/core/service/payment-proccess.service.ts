@@ -20,7 +20,9 @@ import { TransactionEntity } from '@src/module/transaction/persistence/entity/tr
 import { TransactionDetailEntity } from '@src/module/transaction/persistence/entity/transaction-details.entity';
 import { StripeApiProvider } from '@src/module/transaction/integration/provider/stripe-api.provider';
 import { BraintreeApiProvider } from '@src/module/transaction/integration/provider/braintree-api.provider';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class PaymentProcessService {
   constructor(
     private readonly transactionHistoryRepository: TransactionHistoryRepository,
@@ -68,7 +70,7 @@ export class PaymentProcessService {
 
     Promise.all([
       await this.transactionHistoryRepository.save(historyModel),
-      await this.transactionRepository.save(transactionModel),
+      await this.transactionRepository.saveTransaction(transactionModel),
       await this.transactionDetailRepository.save(detailModel),
     ]);
 
@@ -84,12 +86,18 @@ export class PaymentProcessService {
         },
       });
 
-      // await this.transactionHistoryRepository.save({
-      //   ...historyModel,
-      //   status: EPaymentStatus.PROCESSED,
-      //   statusMessage: EPaymentStatusMessage.PROCESSED,
-      //   processedBy: EIntegrator.STRIPE,
-      // });
+      await this.transactionHistoryRepository.save(
+        new TransactionHistoryEntity({
+          transactionId: transactionId,
+          paymentType: params.paymentMethod.type,
+          type: EType.PAYMENT,
+          status: EPaymentStatus.PROCESSED,
+          statusMessage: EPaymentStatusMessage.PROCESSED,
+          processedBy: EIntegrator.STRIPE,
+          currency: params.currency,
+          amount: params.amount,
+        }),
+      );
 
       return {
         status: transactionResponse.status,
@@ -102,12 +110,18 @@ export class PaymentProcessService {
       };
     } catch (stripeError) {
       console.log(`STRIPE_PROVIDER_ERROR::${stripeError}`);
-      // await this.transactionHistoryRepository.save({
-      //   ...historyModel,
-      //   status: EPaymentStatus.PROCESSING_FAILED,
-      //   statusMessage: EPaymentStatusMessage.PROCESSING_FAILED_UNAVALABLE,
-      //   processedBy: EIntegrator.STRIPE,
-      // });
+      await this.transactionHistoryRepository.save(
+        new TransactionHistoryEntity({
+          transactionId: transactionId,
+          paymentType: params.paymentMethod.type,
+          type: EType.PAYMENT,
+          status: EPaymentStatus.PROCESSING_FAILED,
+          statusMessage: EPaymentStatusMessage.PROCESSING_FAILED_UNAVALABLE,
+          processedBy: EIntegrator.STRIPE,
+          currency: params.currency,
+          amount: params.amount,
+        }),
+      );
 
       try {
         transactionResponse =
@@ -118,13 +132,18 @@ export class PaymentProcessService {
             paymentType: params.paymentMethod.type,
             card: params.paymentMethod.card,
           });
-
-        //await this.transactionHistoryRepository.save({
-        //   ...historyModel,
-        //   status: EPaymentStatus.PROCESSED,
-        //   statusMessage: EPaymentStatusMessage.PROCESSED,
-        //   processedBy: EIntegrator.BRAINTREE,
-        // });
+        await this.transactionHistoryRepository.save(
+          new TransactionHistoryEntity({
+            transactionId: transactionId,
+            paymentType: params.paymentMethod.type,
+            type: EType.PAYMENT,
+            status: EPaymentStatus.PROCESSED,
+            statusMessage: EPaymentStatusMessage.PROCESSED,
+            processedBy: EIntegrator.BRAINTREE,
+            currency: params.currency,
+            amount: params.amount,
+          }),
+        );
 
         return {
           status: transactionResponse.status,
@@ -137,12 +156,18 @@ export class PaymentProcessService {
         };
       } catch (braintreeError) {
         console.log(`BRAINTREE_PROVIDER_ERROR::${braintreeError}`);
-        // await this.transactionHistoryRepository.save({
-        //   ...historyModel,
-        //   status: EPaymentStatus.PROCESSING_FAILED,
-        //   statusMessage: EPaymentStatusMessage.PROCESSING_FAILED_UNAVALABLE,
-        //   processedBy: EIntegrator.BRAINTREE,
-        // });
+        await this.transactionHistoryRepository.save(
+          new TransactionHistoryEntity({
+            transactionId: transactionId,
+            paymentType: params.paymentMethod.type,
+            type: EType.PAYMENT,
+            status: EPaymentStatus.PROCESSING_FAILED,
+            statusMessage: EPaymentStatusMessage.PROCESSING_FAILED_UNAVALABLE,
+            processedBy: EIntegrator.BRAINTREE,
+            currency: params.currency,
+            amount: params.amount,
+          }),
+        );
 
         return {
           status: EPaymentStatus.PROCESSING_FAILED,

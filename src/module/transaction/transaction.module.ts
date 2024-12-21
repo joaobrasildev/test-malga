@@ -6,7 +6,7 @@ import { StripeApiProvider } from './integration/provider/stripe-api.provider';
 import { BraintreeApiProvider } from './integration/provider/braintree-api.provider';
 
 @Module({
-  imports: [PersistenceModule],
+  imports: [PersistenceModule.forRoot()],
   providers: [PaymentProcessService, StripeApiProvider, BraintreeApiProvider],
   controllers: [PaymentProcessController],
   exports: [StripeApiProvider, BraintreeApiProvider],

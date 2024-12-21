@@ -1,7 +1,7 @@
 import {
   configSchema,
   environmentSchema,
-} from '@src/shared/config/config.schema';
+} from '@src/shared/module/config/config.schema';
 import { z } from 'zod';
 
 export type Environment = z.infer<typeof environmentSchema>;

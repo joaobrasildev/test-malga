@@ -1,28 +1,23 @@
 import { WithOptional } from '@src/shared/core/model/default.model';
 import { randomUUID } from 'crypto';
-import {
-  EIntegrator,
-  EPaymentStatus,
-  EPaymentType,
-  EType,
-} from '../enum/transaction.enum';
+import { EPaymentType } from '../enum/transaction.enum';
 
-export class TransactionModel {
+export class TransactionDetailModel {
   id: string;
-  paymentType: EPaymentType;
-  type: EType;
-  status: EPaymentStatus;
-  statusMessage: string;
-  processedBy: EIntegrator;
-  currency: string;
-  amount: number;
+  transactionId: string;
+  type: EPaymentType;
+  cardNumber: string;
+  holderName: string;
+  cvv: string;
+  expirationDate: string;
+  installments: number;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
 
   constructor(
     data: WithOptional<
-      TransactionModel,
+      TransactionDetailModel,
       'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
     >,
   ) {

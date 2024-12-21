@@ -24,6 +24,7 @@ export class PaymentProcessController {
     const response = plainToInstance(PaymentResponseDto, payment, {
       excludeExtraneousValues: true,
     });
+
     return response;
   }
 }
