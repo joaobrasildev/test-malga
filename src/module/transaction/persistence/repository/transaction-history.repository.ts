@@ -40,6 +40,10 @@ export class TransactionHistoryRepository extends DefaultTypeOrmRepository<Trans
     return this.entitiesToModels(transactionHistories);
   }
 
+  async deleteAll(): Promise<void> {
+    await this.repository.delete({});
+  }
+
   private entitiesToModels(
     entities: TransactionHistoryEntity[],
   ): TransactionHistoryModel[] {

@@ -24,6 +24,7 @@ export const migrate = async () => {
   await createPostgresDatabase({
     ifNotExist: true,
     options,
+    initialDatabase: 'malgadb',
   });
   await migrationModule.get(TypeOrmMigrationService).migrate();
 };

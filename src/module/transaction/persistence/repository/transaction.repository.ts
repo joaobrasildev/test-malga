@@ -36,6 +36,10 @@ export class TransactionRepository extends DefaultTypeOrmRepository<TransactionE
     return this.entityToModel(transaction);
   }
 
+  async deleteAll(): Promise<void> {
+    await this.repository.delete({});
+  }
+
   private entityToModel(entity: TransactionEntity): TransactionModel {
     return new TransactionModel({
       id: entity.id,
