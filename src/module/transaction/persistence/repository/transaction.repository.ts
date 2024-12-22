@@ -36,4 +36,34 @@ export class TransactionRepository extends DefaultTypeOrmRepository<TransactionE
       deletedAt: transaction.deletedAt,
     });
   }
+
+  async updateTransaction(model: TransactionModel): Promise<TransactionModel> {
+    const transaction = new TransactionEntity({
+      id: model.id,
+      externalTransactionId: model.externalTransactionId,
+      paymentType: model.paymentType,
+      type: model.type,
+      status: model.status,
+      statusMessage: model.statusMessage,
+      processedBy: model.processedBy,
+      currency: model.currency,
+      amount: model.amount,
+    });
+    await this.repository.update({ id: model.id }, transaction);
+
+    return new TransactionModel({
+      id: transaction.id,
+      externalTransactionId: transaction.externalTransactionId,
+      paymentType: transaction.paymentType,
+      type: transaction.type,
+      status: transaction.status,
+      statusMessage: transaction.statusMessage,
+      processedBy: transaction.processedBy,
+      currency: transaction.currency,
+      amount: transaction.amount,
+      createdAt: transaction.createdAt,
+      updatedAt: transaction.updatedAt,
+      deletedAt: transaction.deletedAt,
+    });
+  }
 }

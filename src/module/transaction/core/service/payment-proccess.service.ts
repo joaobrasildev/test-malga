@@ -101,6 +101,20 @@ export class PaymentProcessService {
         }),
       );
 
+      await this.transactionRepository.updateTransaction(
+        new TransactionModel({
+          id: transactionId,
+          externalTransactionId: transactionResponse.id,
+          paymentType: params.paymentMethod.type,
+          type: EType.PAYMENT,
+          status: EPaymentStatus.PROSSEGING,
+          statusMessage: EPaymentStatusMessage.PROCESSING,
+          processedBy: EIntegrator.NO_INTEGRATOR,
+          currency: params.currency,
+          amount: params.amount,
+        }),
+      );
+
       return {
         status: transactionResponse.status,
         currency: transactionResponse.currency,
@@ -134,6 +148,7 @@ export class PaymentProcessService {
             paymentType: params.paymentMethod.type,
             card: params.paymentMethod.card,
           });
+
         await this.transactionHistoryRepository.saveTransactionHistory(
           new TransactionHistoryModel({
             transactionId: transactionId,
@@ -142,6 +157,20 @@ export class PaymentProcessService {
             status: EPaymentStatus.PROCESSED,
             statusMessage: EPaymentStatusMessage.PROCESSED,
             processedBy: EIntegrator.BRAINTREE,
+            currency: params.currency,
+            amount: params.amount,
+          }),
+        );
+
+        await this.transactionRepository.updateTransaction(
+          new TransactionModel({
+            id: transactionId,
+            externalTransactionId: transactionResponse.id,
+            paymentType: params.paymentMethod.type,
+            type: EType.PAYMENT,
+            status: EPaymentStatus.PROSSEGING,
+            statusMessage: EPaymentStatusMessage.PROCESSING,
+            processedBy: EIntegrator.NO_INTEGRATOR,
             currency: params.currency,
             amount: params.amount,
           }),

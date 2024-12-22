@@ -46,6 +46,7 @@ describe('PaymentProcessService', () => {
           provide: TransactionRepository,
           useValue: {
             saveTransaction: jest.fn(),
+            updateTransaction: jest.fn(),
           },
         },
         {
@@ -92,6 +93,9 @@ describe('PaymentProcessService', () => {
     transactionRepository.saveTransaction.mockResolvedValue(
       transactionResponseMock,
     );
+    transactionRepository.updateTransaction.mockResolvedValue(
+      transactionResponseMock,
+    );
 
     stripeApiProvider.paymentTransaction.mockResolvedValue(
       stripeApiResponseMock,
@@ -115,6 +119,9 @@ describe('PaymentProcessService', () => {
       detailResponseMock,
     );
     transactionRepository.saveTransaction.mockResolvedValue(
+      transactionResponseMock,
+    );
+    transactionRepository.updateTransaction.mockResolvedValue(
       transactionResponseMock,
     );
 
@@ -142,6 +149,7 @@ describe('PaymentProcessService', () => {
     transactionRepository.saveTransaction.mockResolvedValue(
       transactionResponseMock,
     );
+
     await paymentProcessService.proccess(paymentProcessInput);
 
     expect(

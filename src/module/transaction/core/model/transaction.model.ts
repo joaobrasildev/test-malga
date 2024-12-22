@@ -16,6 +16,7 @@ export class TransactionModel {
   processedBy: EIntegrator;
   currency: string;
   amount: number;
+  externalTransactionId: string | undefined;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
@@ -23,7 +24,7 @@ export class TransactionModel {
   constructor(
     data: WithOptional<
       TransactionModel,
-      'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
+      'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'externalTransactionId'
     >,
   ) {
     Object.assign(this, {
