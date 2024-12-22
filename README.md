@@ -42,8 +42,6 @@ $ npm run db:migrate
 $ npm run start
 ```
 
-
-
 - In the root folder has a application collection
 
 # To run unit test
@@ -53,7 +51,7 @@ $ npm run test
 
 # To run e2e test
 
-- Navigate to the src/module/transaction/__test__/e2e folder and RUN
+- Navigate to the src/module/transaction/\_\_test\_\_/e2e folder and RUN
 ```bash
 $ docker compose up -d
 ```
