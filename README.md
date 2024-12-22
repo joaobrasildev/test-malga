@@ -26,6 +26,8 @@ $ npm i -g @nestjs/cli
 ```bash
 $ npm i
 ```
+- Setting you .env based ON .env.default
+
 - Go to the root folder and RUN
 ```bash
 $ docker compose up -d
@@ -36,7 +38,6 @@ $ docker compose up -d
 $ npm run db:migrate
 ```
 
-- Setting you .env based ON .env.default
 ```bash
 $ npm run start
 ```
