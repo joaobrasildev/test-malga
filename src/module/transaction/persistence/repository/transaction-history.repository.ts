@@ -24,19 +24,44 @@ export class TransactionHistoryRepository extends DefaultTypeOrmRepository<Trans
     });
     await this.repository.save(transactionHistory);
 
+    return this.entityToModel(transactionHistory);
+  }
+
+  async getHistoryByTransactionId(
+    transactionId: string,
+  ): Promise<TransactionHistoryModel[] | undefined> {
+    const transactionHistories = await this.repository.find({
+      where: {
+        transactionId,
+      },
+    });
+    if (!transactionHistories) return;
+
+    return this.entitiesToModels(transactionHistories);
+  }
+
+  private entitiesToModels(
+    entities: TransactionHistoryEntity[],
+  ): TransactionHistoryModel[] {
+    return entities.map((entity) => this.entityToModel(entity));
+  }
+
+  private entityToModel(
+    entity: TransactionHistoryEntity,
+  ): TransactionHistoryModel {
     return new TransactionHistoryModel({
-      id: transactionHistory.id,
-      transactionId: transactionHistory.transactionId,
-      paymentType: transactionHistory.paymentType,
-      type: transactionHistory.type,
-      status: transactionHistory.status,
-      statusMessage: transactionHistory.statusMessage,
-      processedBy: transactionHistory.processedBy,
-      currency: transactionHistory.currency,
-      amount: transactionHistory.amount,
-      createdAt: transactionHistory.createdAt,
-      updatedAt: transactionHistory.updatedAt,
-      deletedAt: transactionHistory.deletedAt,
+      id: entity.id,
+      transactionId: entity.transactionId,
+      paymentType: entity.paymentType,
+      type: entity.type,
+      status: entity.status,
+      statusMessage: entity.statusMessage,
+      processedBy: entity.processedBy,
+      currency: entity.currency,
+      amount: entity.amount,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      deletedAt: entity.deletedAt,
     });
   }
 }

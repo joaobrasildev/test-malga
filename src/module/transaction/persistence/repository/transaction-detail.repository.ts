@@ -19,7 +19,7 @@ export class TransactionDetailRepository extends DefaultTypeOrmRepository<Transa
     return this.entityToModel(transactionDetail);
   }
 
-  async getTransactionByTransactionId(
+  async getDetailByTransactionId(
     transactionId: string,
   ): Promise<TransactionDetailModel | undefined> {
     const transactionDetail = await this.repository.findOne({
