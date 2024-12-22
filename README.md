@@ -26,15 +26,18 @@ $ npm i
 ```bash
 $ docker compose up -d
 ```
-- Setting you .env based ON .env.default
-```bash
-$ npm run start
-```
 
 - Apply migrations
 ```bash
 $ npm run db:migrate
 ```
+
+- Setting you .env based ON .env.default
+```bash
+$ npm run start
+```
+
+
 
 - In the root folder has a application collection
 
