@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker/.';
 import {
   EIntegrator,
-  EPaymentStatus,
-  EPaymentStatusMessage,
+  ETransactionStatus,
+  ETransactionStatusMessage,
   EPaymentType,
   EType,
 } from '../../enum/transaction.enum';
@@ -16,8 +16,8 @@ export const historyResponseMock = new TransactionHistoryModel({
   transactionId: faker.string.uuid(),
   paymentType: EPaymentType.CARD,
   type: EType.PAYMENT,
-  status: EPaymentStatus.PROSSEGING,
-  statusMessage: EPaymentStatusMessage.PROCESSING,
+  status: ETransactionStatus.PROSSEGING,
+  statusMessage: ETransactionStatusMessage.PROCESSING,
   processedBy: EIntegrator.NO_INTEGRATOR,
   currency: 'BRL',
   amount: faker.number.int(),
@@ -27,8 +27,8 @@ export const transactionResponseMock = new TransactionModel({
   id: faker.string.uuid(),
   paymentType: EPaymentType.CARD,
   type: EType.PAYMENT,
-  status: EPaymentStatus.PROSSEGING,
-  statusMessage: EPaymentStatusMessage.PROCESSING,
+  status: ETransactionStatus.PROSSEGING,
+  statusMessage: ETransactionStatusMessage.PROCESSING,
   processedBy: EIntegrator.NO_INTEGRATOR,
   currency: 'BRL',
   amount: faker.number.int(),

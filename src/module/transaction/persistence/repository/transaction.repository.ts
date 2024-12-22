@@ -10,35 +10,52 @@ export class TransactionRepository extends DefaultTypeOrmRepository<TransactionE
     super(TransactionEntity, dataSource);
   }
   async saveTransaction(model: TransactionModel): Promise<TransactionModel> {
-    const transaction = new TransactionEntity({
-      id: model.id,
-      paymentType: model.paymentType,
-      type: model.type,
-      status: model.status,
-      statusMessage: model.statusMessage,
-      processedBy: model.processedBy,
-      currency: model.currency,
-      amount: model.amount,
-    });
+    const transaction = this.modelToEntity(model);
     await this.repository.save(transaction);
 
-    return new TransactionModel({
-      id: transaction.id,
-      paymentType: transaction.paymentType,
-      type: transaction.type,
-      status: transaction.status,
-      statusMessage: transaction.statusMessage,
-      processedBy: transaction.processedBy,
-      currency: transaction.currency,
-      amount: transaction.amount,
-      createdAt: transaction.createdAt,
-      updatedAt: transaction.updatedAt,
-      deletedAt: transaction.deletedAt,
-    });
+    return this.entityToModel(transaction);
   }
 
   async updateTransaction(model: TransactionModel): Promise<TransactionModel> {
-    const transaction = new TransactionEntity({
+    const transaction = this.modelToEntity(model);
+    await this.repository.update({ id: model.id }, transaction);
+
+    return this.entityToModel(transaction);
+  }
+
+  async getTransactionByExternalId(
+    externalTransactionId: string,
+  ): Promise<TransactionModel | undefined> {
+    const transaction = await this.repository.findOne({
+      where: {
+        externalTransactionId,
+      },
+    });
+    if (!transaction) return;
+
+    return this.entityToModel(transaction);
+  }
+
+  private entityToModel(entity: TransactionEntity): TransactionModel {
+    return new TransactionModel({
+      id: entity.id,
+      externalTransactionId: entity.externalTransactionId,
+      refundTransactionId: entity.refundTransactionId,
+      paymentType: entity.paymentType,
+      type: entity.type,
+      status: entity.status,
+      statusMessage: entity.statusMessage,
+      processedBy: entity.processedBy,
+      currency: entity.currency,
+      amount: entity.amount,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      deletedAt: entity.deletedAt,
+    });
+  }
+
+  private modelToEntity(model: TransactionModel): TransactionEntity {
+    return new TransactionEntity({
       id: model.id,
       externalTransactionId: model.externalTransactionId,
       paymentType: model.paymentType,
@@ -48,22 +65,6 @@ export class TransactionRepository extends DefaultTypeOrmRepository<TransactionE
       processedBy: model.processedBy,
       currency: model.currency,
       amount: model.amount,
-    });
-    await this.repository.update({ id: model.id }, transaction);
-
-    return new TransactionModel({
-      id: transaction.id,
-      externalTransactionId: transaction.externalTransactionId,
-      paymentType: transaction.paymentType,
-      type: transaction.type,
-      status: transaction.status,
-      statusMessage: transaction.statusMessage,
-      processedBy: transaction.processedBy,
-      currency: transaction.currency,
-      amount: transaction.amount,
-      createdAt: transaction.createdAt,
-      updatedAt: transaction.updatedAt,
-      deletedAt: transaction.deletedAt,
     });
   }
 }

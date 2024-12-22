@@ -6,7 +6,7 @@ import {
   Post,
   UseInterceptors,
 } from '@nestjs/common';
-import { PaymentProcessService } from '@src/module/transaction/core/service/payment-proccess.service';
+import { PaymentProcessService } from '@src/module/transaction/core/service/payment-process.service';
 import { plainToInstance } from 'class-transformer';
 import { PaymentRequestDto } from '../dto/request/payment-process.dto';
 import { PaymentResponseDto } from '../dto/response/payment-process.dto';
@@ -20,7 +20,7 @@ export class PaymentProcessController {
   async paymentProcess(
     @Body() data: PaymentRequestDto,
   ): Promise<PaymentResponseDto> {
-    const payment = await this.paymentProcessService.proccess(data);
+    const payment = await this.paymentProcessService.process(data);
     const response = plainToInstance(PaymentResponseDto, payment, {
       excludeExtraneousValues: true,
     });

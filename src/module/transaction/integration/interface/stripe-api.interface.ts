@@ -1,5 +1,5 @@
 import { EPaymentType } from '@src/module/transaction/core/enum/transaction.enum';
-import { ICard } from '@src/module/transaction/core/interface/payment-proccess.interface';
+import { ICard } from '@src/module/transaction/core/interface/payment-process.interface';
 
 export interface IPaymentStripeInput {
   amount: number;

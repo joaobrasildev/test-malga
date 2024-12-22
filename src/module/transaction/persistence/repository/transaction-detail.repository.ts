@@ -13,7 +13,47 @@ export class TransactionDetailRepository extends DefaultTypeOrmRepository<Transa
   async saveTransactionDetail(
     model: TransactionDetailModel,
   ): Promise<TransactionDetailModel> {
-    const transactionDetail = new TransactionDetailEntity({
+    const transactionDetail = this.modelToEntity(model);
+    await this.repository.save(transactionDetail);
+
+    return this.entityToModel(transactionDetail);
+  }
+
+  async getTransactionByTransactionId(
+    transactionId: string,
+  ): Promise<TransactionDetailModel | undefined> {
+    const transactionDetail = await this.repository.findOne({
+      where: {
+        transactionId,
+      },
+    });
+    if (!transactionDetail) return;
+
+    return this.entityToModel(transactionDetail);
+  }
+
+  private entityToModel(
+    entity: TransactionDetailEntity,
+  ): TransactionDetailModel {
+    return new TransactionDetailModel({
+      id: entity.id,
+      transactionId: entity.transactionId,
+      type: entity.type,
+      cardNumber: entity.cardNumber,
+      holderName: entity.holderName,
+      cvv: entity.cvv,
+      expirationDate: entity.expirationDate,
+      installments: entity.installments,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      deletedAt: entity.deletedAt,
+    });
+  }
+
+  private modelToEntity(
+    model: TransactionDetailModel,
+  ): TransactionDetailEntity {
+    return new TransactionDetailEntity({
       transactionId: model.transactionId,
       type: model.type,
       cardNumber: model.cardNumber,
@@ -21,21 +61,6 @@ export class TransactionDetailRepository extends DefaultTypeOrmRepository<Transa
       cvv: model.cvv,
       expirationDate: model.expirationDate,
       installments: model.installments,
-    });
-    await this.repository.save(transactionDetail);
-
-    return new TransactionDetailModel({
-      id: transactionDetail.id,
-      transactionId: transactionDetail.transactionId,
-      type: transactionDetail.type,
-      cardNumber: transactionDetail.cardNumber,
-      holderName: transactionDetail.holderName,
-      cvv: transactionDetail.cvv,
-      expirationDate: transactionDetail.expirationDate,
-      installments: transactionDetail.installments,
-      createdAt: transactionDetail.createdAt,
-      updatedAt: transactionDetail.updatedAt,
-      deletedAt: transactionDetail.deletedAt,
     });
   }
 }

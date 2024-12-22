@@ -2,22 +2,22 @@ import { TransactionDetailRepository } from '@src/module/transaction/persistence
 import { TransactionHistoryRepository } from '@src/module/transaction/persistence/repository/transaction-history.repository';
 import { TransactionRepository } from '@src/module/transaction/persistence/repository/transaction.repository';
 import {
-  EFailReason,
+  EPaymentFailReason,
   IPaymentProccesFailOutput,
   IPaymentProccesInput,
-  IPaymentProccesSuccessOutput,
-} from '../interface/payment-proccess.interface';
+  IPaymentProcessSuccessOutput,
+} from '../interface/payment-process.interface';
 import { randomUUID } from 'crypto';
 import {
   EIntegrator,
-  EPaymentStatus,
-  EPaymentStatusMessage,
+  ETransactionStatus,
+  ETransactionStatusMessage,
   EPaymentType,
   EType,
 } from '../enum/transaction.enum';
 import { StripeApiProvider } from '@src/module/transaction/integration/provider/stripe-api.provider';
 import { BraintreeApiProvider } from '@src/module/transaction/integration/provider/braintree-api.provider';
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { TransactionHistoryModel } from '../model/transaction-history.model';
 import { TransactionModel } from '../model/transaction.model';
 import { TransactionDetailModel } from '../model/transaction-detail.model';
@@ -32,16 +32,16 @@ export class PaymentProcessService {
     private readonly braintreeApiProvider: BraintreeApiProvider,
   ) {}
 
-  async proccess(
+  async process(
     params: IPaymentProccesInput,
-  ): Promise<IPaymentProccesSuccessOutput | IPaymentProccesFailOutput> {
+  ): Promise<IPaymentProcessSuccessOutput | IPaymentProccesFailOutput> {
     const transactionId = randomUUID();
     const historyModel = new TransactionHistoryModel({
       transactionId: transactionId,
       paymentType: params.paymentMethod.type,
       type: EType.PAYMENT,
-      status: EPaymentStatus.PROSSEGING,
-      statusMessage: EPaymentStatusMessage.PROCESSING,
+      status: ETransactionStatus.PROSSEGING,
+      statusMessage: ETransactionStatusMessage.PROCESSING,
       processedBy: EIntegrator.NO_INTEGRATOR,
       currency: params.currency,
       amount: params.amount,
@@ -51,8 +51,8 @@ export class PaymentProcessService {
       id: transactionId,
       paymentType: params.paymentMethod.type,
       type: EType.PAYMENT,
-      status: EPaymentStatus.PROSSEGING,
-      statusMessage: EPaymentStatusMessage.PROCESSING,
+      status: ETransactionStatus.PROSSEGING,
+      statusMessage: ETransactionStatusMessage.PROCESSING,
       processedBy: EIntegrator.NO_INTEGRATOR,
       currency: params.currency,
       amount: params.amount,
@@ -68,12 +68,10 @@ export class PaymentProcessService {
       installments: params.paymentMethod.card.installments,
     });
 
-    Promise.all([
-      await this.transactionHistoryRepository.saveTransactionHistory(
-        historyModel,
-      ),
-      await this.transactionRepository.saveTransaction(transactionModel),
-      await this.transactionDetailRepository.saveTransactionDetail(detailModel),
+    await Promise.all([
+      this.transactionHistoryRepository.saveTransactionHistory(historyModel),
+      this.transactionRepository.saveTransaction(transactionModel),
+      this.transactionDetailRepository.saveTransactionDetail(detailModel),
     ]);
 
     let transactionResponse;
@@ -88,32 +86,33 @@ export class PaymentProcessService {
         },
       });
 
-      await this.transactionHistoryRepository.saveTransactionHistory(
-        new TransactionHistoryModel({
-          transactionId: transactionId,
-          paymentType: params.paymentMethod.type,
-          type: EType.PAYMENT,
-          status: EPaymentStatus.PROCESSED,
-          statusMessage: EPaymentStatusMessage.PROCESSED,
-          processedBy: EIntegrator.STRIPE,
-          currency: params.currency,
-          amount: params.amount,
-        }),
-      );
-
-      await this.transactionRepository.updateTransaction(
-        new TransactionModel({
-          id: transactionId,
-          externalTransactionId: transactionResponse.id,
-          paymentType: params.paymentMethod.type,
-          type: EType.PAYMENT,
-          status: EPaymentStatus.PROSSEGING,
-          statusMessage: EPaymentStatusMessage.PROCESSING,
-          processedBy: EIntegrator.NO_INTEGRATOR,
-          currency: params.currency,
-          amount: params.amount,
-        }),
-      );
+      await Promise.all([
+        this.transactionHistoryRepository.saveTransactionHistory(
+          new TransactionHistoryModel({
+            transactionId: transactionId,
+            paymentType: params.paymentMethod.type,
+            type: EType.PAYMENT,
+            status: ETransactionStatus.PROCESSED,
+            statusMessage: ETransactionStatusMessage.PROCESSED,
+            processedBy: EIntegrator.STRIPE,
+            currency: params.currency,
+            amount: params.amount,
+          }),
+        ),
+        this.transactionRepository.updateTransaction(
+          new TransactionModel({
+            id: transactionId,
+            externalTransactionId: transactionResponse.id,
+            paymentType: params.paymentMethod.type,
+            type: EType.PAYMENT,
+            status: ETransactionStatus.PROCESSED,
+            statusMessage: ETransactionStatusMessage.PROCESSED,
+            processedBy: EIntegrator.STRIPE,
+            currency: params.currency,
+            amount: params.amount,
+          }),
+        ),
+      ]);
 
       return {
         status: transactionResponse.status,
@@ -125,14 +124,14 @@ export class PaymentProcessService {
         date: transactionResponse.createdAt,
       };
     } catch (stripeError) {
-      console.log(`STRIPE_PROVIDER_ERROR::${stripeError}`);
+      console.log(`STRIPE_PROVIDER_PAYMENT_ERROR::${stripeError}`);
       await this.transactionHistoryRepository.saveTransactionHistory(
         new TransactionHistoryModel({
           transactionId: transactionId,
           paymentType: params.paymentMethod.type,
           type: EType.PAYMENT,
-          status: EPaymentStatus.PROCESSING_FAILED,
-          statusMessage: EPaymentStatusMessage.PROCESSING_FAILED_UNAVALABLE,
+          status: ETransactionStatus.PROCESSING_FAILED,
+          statusMessage: ETransactionStatusMessage.PROCESSING_FAILED_UNAVALABLE,
           processedBy: EIntegrator.STRIPE,
           currency: params.currency,
           amount: params.amount,
@@ -154,8 +153,8 @@ export class PaymentProcessService {
             transactionId: transactionId,
             paymentType: params.paymentMethod.type,
             type: EType.PAYMENT,
-            status: EPaymentStatus.PROCESSED,
-            statusMessage: EPaymentStatusMessage.PROCESSED,
+            status: ETransactionStatus.PROCESSED,
+            statusMessage: ETransactionStatusMessage.PROCESSED,
             processedBy: EIntegrator.BRAINTREE,
             currency: params.currency,
             amount: params.amount,
@@ -168,9 +167,9 @@ export class PaymentProcessService {
             externalTransactionId: transactionResponse.id,
             paymentType: params.paymentMethod.type,
             type: EType.PAYMENT,
-            status: EPaymentStatus.PROSSEGING,
-            statusMessage: EPaymentStatusMessage.PROCESSING,
-            processedBy: EIntegrator.NO_INTEGRATOR,
+            status: ETransactionStatus.PROCESSED,
+            statusMessage: ETransactionStatusMessage.PROCESSED,
+            processedBy: EIntegrator.BRAINTREE,
             currency: params.currency,
             amount: params.amount,
           }),
@@ -186,25 +185,26 @@ export class PaymentProcessService {
           date: transactionResponse.date,
         };
       } catch (braintreeError) {
-        console.log(`BRAINTREE_PROVIDER_ERROR::${braintreeError}`);
+        console.log(`BRAINTREE_PROVIDER_PAYMENT_ERROR::${braintreeError}`);
         await this.transactionHistoryRepository.saveTransactionHistory(
           new TransactionHistoryModel({
             transactionId: transactionId,
             paymentType: params.paymentMethod.type,
             type: EType.PAYMENT,
-            status: EPaymentStatus.PROCESSING_FAILED,
-            statusMessage: EPaymentStatusMessage.PROCESSING_FAILED_UNAVALABLE,
+            status: ETransactionStatus.PROCESSING_FAILED,
+            statusMessage:
+              ETransactionStatusMessage.PROCESSING_FAILED_UNAVALABLE,
             processedBy: EIntegrator.BRAINTREE,
             currency: params.currency,
             amount: params.amount,
           }),
         );
 
-        return {
-          status: EPaymentStatus.PROCESSING_FAILED,
-          failReason: EFailReason.INTEGRATOR,
-          message: EPaymentStatusMessage.PROCESSING_FAILED_UNAVALABLE,
-        };
+        throw new InternalServerErrorException({
+          status: ETransactionStatus.PROCESSING_FAILED,
+          failReason: EPaymentFailReason.INTEGRATOR,
+          message: ETransactionStatusMessage.PROCESSING_FAILED_UNAVALABLE,
+        });
       }
     }
   }

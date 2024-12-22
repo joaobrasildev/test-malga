@@ -1,6 +1,6 @@
 import {
-  EPaymentStatus,
-  EPaymentStatusMessage,
+  ETransactionStatus,
+  ETransactionStatusMessage,
   EPaymentType,
 } from '../enum/transaction.enum';
 
@@ -22,7 +22,7 @@ export interface IPaymentProccesInput {
   };
 }
 
-export interface IPaymentProccesSuccessOutput {
+export interface IPaymentProcessSuccessOutput {
   status: string;
   currency: string;
   transactionId: string;
@@ -32,13 +32,13 @@ export interface IPaymentProccesSuccessOutput {
   date: Date;
 }
 
-export enum EFailReason {
+export enum EPaymentFailReason {
   INTEGRATOR = 'integrator',
   UNAUTHORIZED = 'unauthorized',
 }
 
 export interface IPaymentProccesFailOutput {
-  status: EPaymentStatus;
-  failReason: EFailReason;
-  message: EPaymentStatusMessage;
+  status: ETransactionStatus;
+  failReason: EPaymentFailReason;
+  message: ETransactionStatusMessage;
 }

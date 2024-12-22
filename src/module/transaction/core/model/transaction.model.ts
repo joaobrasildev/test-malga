@@ -2,7 +2,7 @@ import { WithOptional } from '@src/shared/core/model/default.model';
 import { randomUUID } from 'crypto';
 import {
   EIntegrator,
-  EPaymentStatus,
+  ETransactionStatus,
   EPaymentType,
   EType,
 } from '../enum/transaction.enum';
@@ -11,12 +11,13 @@ export class TransactionModel {
   id: string;
   paymentType: EPaymentType;
   type: EType;
-  status: EPaymentStatus;
+  status: ETransactionStatus;
   statusMessage: string;
   processedBy: EIntegrator;
   currency: string;
   amount: number;
   externalTransactionId: string | undefined;
+  refundTransactionId: string | undefined;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
@@ -24,7 +25,12 @@ export class TransactionModel {
   constructor(
     data: WithOptional<
       TransactionModel,
-      'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'externalTransactionId'
+      | 'id'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'deletedAt'
+      | 'externalTransactionId'
+      | 'refundTransactionId'
     >,
   ) {
     Object.assign(this, {

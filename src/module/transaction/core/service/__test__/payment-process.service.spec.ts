@@ -1,5 +1,5 @@
 import { TransactionHistoryRepository } from '@src/module/transaction/persistence/repository/transaction-history.repository';
-import { PaymentProcessService } from '../payment-proccess.service';
+import { PaymentProcessService } from '../payment-process.service';
 import { TransactionRepository } from '@src/module/transaction/persistence/repository/transaction.repository';
 import { TransactionDetailRepository } from '@src/module/transaction/persistence/repository/transaction-detail.repository';
 import { StripeApiProvider } from '@src/module/transaction/integration/provider/stripe-api.provider';
@@ -12,11 +12,17 @@ import {
   stripeApiResponseMock,
   transactionResponseMock,
   paymentProcessInput,
-} from './payment-process.mock';
+} from '../utils/payment-process.mock';
 import {
   braintreePaymentInputBuilder,
   stripePaymentInputBuilder,
-} from './payment-process.builder';
+} from '../utils/payment-process.builder';
+import { InternalServerErrorException } from '@nestjs/common';
+import {
+  ETransactionStatus,
+  ETransactionStatusMessage,
+} from '../../enum/transaction.enum';
+import { EPaymentFailReason } from '../../interface/payment-process.interface';
 
 describe('PaymentProcessService', () => {
   let paymentProcessService: PaymentProcessService;
@@ -101,7 +107,7 @@ describe('PaymentProcessService', () => {
       stripeApiResponseMock,
     );
 
-    await paymentProcessService.proccess(paymentProcessInput);
+    await paymentProcessService.process(paymentProcessInput);
     expect(
       transactionHistoryRepository.saveTransactionHistory,
     ).toHaveBeenCalledTimes(2);
@@ -129,7 +135,7 @@ describe('PaymentProcessService', () => {
       braintreeApiResponseMock,
     );
 
-    await paymentProcessService.proccess(paymentProcessInput);
+    await paymentProcessService.process(paymentProcessInput);
     expect(
       transactionHistoryRepository.saveTransactionHistory,
     ).toHaveBeenCalledTimes(4);
@@ -150,8 +156,15 @@ describe('PaymentProcessService', () => {
       transactionResponseMock,
     );
 
-    await paymentProcessService.proccess(paymentProcessInput);
-
+    await expect(
+      paymentProcessService.process(paymentProcessInput),
+    ).rejects.toEqual(
+      new InternalServerErrorException({
+        status: ETransactionStatus.PROCESSING_FAILED,
+        failReason: EPaymentFailReason.INTEGRATOR,
+        message: ETransactionStatusMessage.PROCESSING_FAILED_UNAVALABLE,
+      }),
+    );
     expect(
       transactionHistoryRepository.saveTransactionHistory,
     ).toHaveBeenCalledTimes(5);

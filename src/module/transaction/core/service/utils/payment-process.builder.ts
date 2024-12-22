@@ -1,5 +1,5 @@
 import { IPaymentStripeInput } from '@src/module/transaction/integration/interface/stripe-api.interface';
-import { IPaymentProccesInput } from '../../interface/payment-proccess.interface';
+import { IPaymentProccesInput } from '../../interface/payment-process.interface';
 import { IPaymentBraintreeInput } from '@src/module/transaction/integration/interface/braintree-api.interface';
 
 export function stripePaymentInputBuilder(

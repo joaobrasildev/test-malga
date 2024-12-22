@@ -2,7 +2,7 @@ import { WithOptional } from '@src/shared/core/model/default.model';
 import { randomUUID } from 'crypto';
 import {
   EIntegrator,
-  EPaymentStatus,
+  ETransactionStatus,
   EPaymentType,
   EType,
 } from '../enum/transaction.enum';
@@ -12,7 +12,7 @@ export class TransactionHistoryModel {
   transactionId: string;
   paymentType: EPaymentType;
   type: EType;
-  status: EPaymentStatus;
+  status: ETransactionStatus;
   statusMessage: string;
   processedBy: EIntegrator;
   currency: string;

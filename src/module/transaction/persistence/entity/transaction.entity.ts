@@ -1,6 +1,6 @@
 import {
   EIntegrator,
-  EPaymentStatus,
+  ETransactionStatus,
   EPaymentType,
   EType,
 } from '@src/module/transaction/core/enum/transaction.enum';
@@ -13,6 +13,9 @@ import { TransactionDetailEntity } from './transaction-details.entity';
 export class TransactionEntity extends DefaultEntity<TransactionEntity> {
   @Column({ nullable: true, type: 'uuid' })
   externalTransactionId: string;
+
+  @Column({ nullable: true, type: 'uuid' })
+  refundTransactionId: string;
 
   @Column({
     nullable: false,
@@ -33,10 +36,10 @@ export class TransactionEntity extends DefaultEntity<TransactionEntity> {
   @Column({
     nullable: false,
     type: 'enum',
-    enum: EPaymentStatus,
+    enum: ETransactionStatus,
     enumName: 'paymentStatusTransaction',
   })
-  status: EPaymentStatus;
+  status: ETransactionStatus;
 
   @Column({
     nullable: false,

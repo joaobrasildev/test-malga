@@ -1,6 +1,6 @@
 import {
   EIntegrator,
-  EPaymentStatus,
+  ETransactionStatus,
   EPaymentType,
   EType,
 } from '@src/module/transaction/core/enum/transaction.enum';
@@ -32,10 +32,10 @@ export class TransactionHistoryEntity extends DefaultEntity<TransactionHistoryEn
   @Column({
     nullable: false,
     type: 'enum',
-    enum: EPaymentStatus,
+    enum: ETransactionStatus,
     enumName: 'paymentStatusHistory',
   })
-  status: EPaymentStatus;
+  status: ETransactionStatus;
 
   @Column({
     nullable: false,

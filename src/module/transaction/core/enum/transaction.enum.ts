@@ -7,7 +7,7 @@ export enum EType {
   REFUND = 'refund',
 }
 
-export enum EPaymentStatus {
+export enum ETransactionStatus {
   PROSSEGING = 'processing',
   PROCESSED = 'processed',
   PROCESSING_FAILED = 'processing_failed',
@@ -16,7 +16,7 @@ export enum EPaymentStatus {
   REFUNDING_FAILED = 'refunding_failed',
 }
 
-export enum EPaymentStatusMessage {
+export enum ETransactionStatusMessage {
   PROCESSING = 'Pagamento em processamento.',
   PROCESSED = 'Pagamento processado com sucesso.',
   PROCESSING_FAILED_UNAVALABLE = 'Falha no processamento do pagamento - Integrador indisponível.',
