@@ -8,7 +8,9 @@ import {
 } from '@nestjs/common';
 import { GetInfoRequestDto } from '../dto/request/get-transaction-info.dto';
 import { GetTransactionInfoService } from '@src/module/transaction/core/service/get-transaction-info.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Payments')
 @Controller('payments')
 export class GetTransactionInfoController {
   constructor(

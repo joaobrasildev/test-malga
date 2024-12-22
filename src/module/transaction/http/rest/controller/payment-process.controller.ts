@@ -10,7 +10,9 @@ import { PaymentProcessService } from '@src/module/transaction/core/service/paym
 import { plainToInstance } from 'class-transformer';
 import { PaymentRequestDto } from '../dto/request/payment-process.dto';
 import { PaymentResponseDto } from '../dto/response/payment-process.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Payments')
 @Controller('payments')
 export class PaymentProcessController {
   constructor(private readonly paymentProcessService: PaymentProcessService) {}

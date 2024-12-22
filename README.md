@@ -2,6 +2,8 @@
 
 [Refinamento Miro](https://miro.com/app/board/uXjVL0yVHSM=/?moveToWidget=3458764611372257897&cot=14).
 
+[Doc OpenApi](http://localhost:3000/api).
+
 [Pull request](https://github.com/joaobrasildev/test-malga/pull/1).
 
 [Commit list](https://github.com/joaobrasildev/test-malga/pull/1/commits).

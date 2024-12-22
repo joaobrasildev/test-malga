@@ -10,7 +10,9 @@ import { plainToInstance } from 'class-transformer';
 import { RefundProcessService } from '@src/module/transaction/core/service/refund-proccess.service';
 import { RefundRequestDto } from '../dto/request/refund-process.dto';
 import { RefundResponseDto } from '../dto/response/refund-process.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Refunds')
 @Controller('refunds')
 export class RefundProcessController {
   constructor(private readonly refundProcessService: RefundProcessService) {}
