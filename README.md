@@ -16,6 +16,10 @@
 
 # To run project
 ```bash
+$ git checkout develop
+```
+
+```bash
 $ npm i -g @nestjs/cli
 ```
 
