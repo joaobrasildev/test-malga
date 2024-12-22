@@ -22,7 +22,6 @@ import {
   EType,
 } from '../enum/transaction.enum';
 import { TransactionModel } from '../model/transaction.model';
-import { TransactionDetailRepository } from '../../persistence/repository/transaction-detail.repository';
 
 @Injectable()
 export class RefundProcessService {
@@ -30,7 +29,6 @@ export class RefundProcessService {
   constructor(
     private readonly transactionHistoryRepository: TransactionHistoryRepository,
     private readonly transactionRepository: TransactionRepository,
-    private readonly transactionDetailRepository: TransactionDetailRepository,
     private readonly stripeApiProvider: StripeApiProvider,
     private readonly braintreeApiProvider: BraintreeApiProvider,
   ) {

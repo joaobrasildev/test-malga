@@ -8,7 +8,7 @@ export enum EType {
 }
 
 export enum ETransactionStatus {
-  PROSSEGING = 'processing',
+  PROCESSING = 'processing',
   PROCESSED = 'processed',
   PROCESSING_FAILED = 'processing_failed',
   REFUNDING = 'refunding',
