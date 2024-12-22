@@ -30,6 +30,12 @@ $ docker compose up -d
 ```bash
 $ npm run start
 ```
+
+- Apply migrations
+```bash
+$ npm run db:migrate
+```
+
 - In the root folder has a application collection
 
 # To run unit test
