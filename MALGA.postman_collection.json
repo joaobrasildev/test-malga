@@ -1,0 +1,80 @@
+{
+	"info": {
+		"_postman_id": "1addcd4f-b675-4201-990a-baba05a96249",
+		"name": "MALGA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40211883"
+	},
+	"item": [
+		{
+			"name": "payment-process",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"amount\": 100,\n  \"currency\": \"BRL\",\n  \"description\": \"payment\",\n  \"paymentMethod\": {\n    \"type\": \"card\",\n    \"card\": {\n        \"number\": \"5544618458800811\",\n        \"holderName\": \"Radek Muhammed\",\n        \"cvv\": \"153\",\n        \"expirationDate\": \"10/2030\",\n        \"installments\": 2\n    }\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/payments",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refund-process",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"transactionId\": \"345b42e6-02c5-4fe5-a2db-273b7a9589ff\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/refunds",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"refunds"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-transaction-info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/payments/345b42e6-02c5-4fe5-a2db-273b7a9589ff",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"payments",
+						"345b42e6-02c5-4fe5-a2db-273b7a9589ff"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
