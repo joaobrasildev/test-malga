@@ -28,14 +28,16 @@ $ npm i -g @nestjs/cli
 ```bash
 $ npm i
 ```
-- Setting you .env based ON .env.default
 
+- Setting you .env based ON .env.default
 - Go to the root folder and RUN
+
 ```bash
 $ docker compose up -d
 ```
 
 - Apply migrations
+
 ```bash
 $ npm run db:migrate
 ```
@@ -45,8 +47,11 @@ $ npm run start
 ```
 
 - In the root folder has a application collection
+- Para solicitar um estorno e para listar os detalhes da transação deve-se utilizar o seguinte parâmetro retornado na criação:
+__"externalTransactionId": "uuid"__
 
 # To run unit test
+
 ```bash
 $ npm run test
 ```
@@ -54,16 +59,19 @@ $ npm run test
 # To run e2e test
 
 - Navigate to the src/module/transaction/\_\_test\_\_/e2e folder and RUN
+
 ```bash
 $ docker compose up -d
 ```
 
 - apply migrations on database test:
+
 ```bash
 $ npm run test:db:setup
 ```
 
 - execute e2e tests RUN
+
 ```bash
 $ npm run test:e2e
 ```
